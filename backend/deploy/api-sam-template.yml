@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: go-serverless-app-4
+
+Resources:
+  PDALambdaAPIGWForPublic:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: pda-api-for-public
+      Handler: bootstrap
+      Role: !GetAtt FunctionRole.Arn
+      Runtime: provided.al2
+      CodeUri: ../src/lambda_handler/api_for_public/main.zip
+      Timeout: 60
+      MemorySize: 1024
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /v1
+            Method: *
+  FunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - cognito-idp.amazonaws.com
+                - api-gateway.amazonaws.com
+                - s3.amazonaws.com
+                - ses.amazonaws.com
+      Policies:
+        - PolicyName: LambdaApiPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:* # Allow all S3 actions
+                  - lambda:* # Allow all Lambda actions
+                  - cognito-idp:* # Allow all Cognito actions
+                  - apigateway:* # Allow all API Gateway actions
+                  - logs:* # Allow all CloudWatch Logs actions
+                  - ses:* # Allow all SES actions
+                Resource: "*"
