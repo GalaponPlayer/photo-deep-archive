@@ -32,10 +32,10 @@ Resources:
             Principal:
               Service:
                 - lambda.amazonaws.com
-                - cognito-idp.amazonaws.com
-                - api-gateway.amazonaws.com
-                - s3.amazonaws.com
-                - ses.amazonaws.com
+                # - cognito-idp.amazonaws.com
+                # - api-gateway.amazonaws.com
+                # - s3.amazonaws.com
+                # - ses.amazonaws.com
       Policies:
         - PolicyName: LambdaApiPolicy
           PolicyDocument:
