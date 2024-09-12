@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 # Set Go environment variables
+RUN mkdir -p /go && chmod -R 777 /go
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
 ENV GOBIN="${GOPATH}/bin"
