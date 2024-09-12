@@ -40,4 +40,4 @@ jobs:
       - name: Build & Deploy Cloudformation stacks
         run: |
           sam build --template-file ${TEMPLATE_FILE}
-          sam deploy --template-file ${TEMPLATE_FILE} --stack-name apiForPublic --no-confirm-changeset --no-fail-on-empty-changeset --s3-bucket ${{secrets.S3_BUCKET_NAME}}
+          sam deploy --template-file ${TEMPLATE_FILE} --stack-name apiForPublic --no-confirm-changeset --no-fail-on-empty-changeset --s3-bucket ${{secrets.S3_BUCKET_NAME}} --capabilities CAPABILITY_IAM
