@@ -40,4 +40,4 @@ jobs:
       - name: Build & Deploy Cloudformation stacks
         run: |
           sam build --template-file ${TEMPLATE_FILE}
-          sam deploy --template-file ${TEMPLATE_FILE}
+          sam deploy --template-file ${TEMPLATE_FILE} --stack-name apiForPublic --no-confirm-changeset --no-fail-on-empty-changeset
