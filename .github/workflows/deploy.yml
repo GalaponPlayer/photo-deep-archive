@@ -22,11 +22,16 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
-      - name: Build Go Lambda Function
+      - name: Build Go Lambda Function in Amazon Linux 2
         run: |
-          cd backend/src/lambda_handler/api_for_public
-          GOOS=linux GOARCH=amd64 go build -o bootstrap
+          docker run --rm -v "$PWD":/go/src/app -w /go/src/app/backend/src/lambda_handler/api_for_public golang:1.21-amazonlinux2 \
+          go build -o bootstrap
           zip main.zip bootstrap
+      # - name: Build Go Lambda Function
+      #   run: |
+      #     cd backend/src/lambda_handler/api_for_public
+      #     GOOS=linux GOARCH=amd64 go build -o bootstrap
+      #     zip main.zip bootstrap
       - name: Setup aws-sam
         uses: aws-actions/setup-sam@v2
       - name: Configure AWS credentials
