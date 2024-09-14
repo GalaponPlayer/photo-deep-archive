@@ -30,7 +30,7 @@ jobs:
       - name: Build Go Lambda Function
         run: |
           cd backend/src/lambda_handler/api_for_public
-          CGO_ENABLED=0　GOOS=linux GOARCH=amd64 go build -o bootstrap
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bootstrap
           zip main.zip bootstrap
       - name: Setup aws-sam
         uses: aws-actions/setup-sam@v2
