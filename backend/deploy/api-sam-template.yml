@@ -19,7 +19,7 @@ Resources:
         CatchAll:
           Type: Api
           Properties:
-            Path: /v1
+            Path: /v1/{proxy+}
             Method: ANY
   FunctionRole:
     Type: AWS::IAM::Role
