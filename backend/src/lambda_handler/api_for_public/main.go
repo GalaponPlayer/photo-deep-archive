@@ -16,12 +16,12 @@ func init() {
 	// stdout and stderr are sent to AWS CloudWatch Logs
 	log.Printf("Gin cold start")
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
+	r.GET("/v1/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "CICD Success!",
 		})
 	})
-	r.GET("/hello", func(c *gin.Context) {
+	r.GET("/v1/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Hello World!",
 		})
