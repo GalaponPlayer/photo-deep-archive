@@ -1,6 +1,7 @@
 package main
 
 import (
+	"app/src/pkg/factory"
 	"context"
 	"log"
 
@@ -15,19 +16,18 @@ var ginLambda *ginadapter.GinLambda
 func init() {
 	// stdout and stderr are sent to AWS CloudWatch Logs
 	log.Printf("Gin cold start")
-	r := gin.Default()
-	r.GET("/v1/ping", func(c *gin.Context) {
+	router := gin.Default()
+	v1Router := router.Group("/v1")
+	v1Router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "CICD Success!",
 		})
 	})
-	r.GET("/v1/hello", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello World!",
-		})
-	})
 
-	ginLambda = ginadapter.New(r)
+	// user
+	v1Router.POST("/user", factory.CreateUser)
+
+	ginLambda = ginadapter.New(router)
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
