@@ -3,6 +3,8 @@ FROM node:20
 # Install Go
 ENV GO_VERSION 1.21.1
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
     curl \
     git && \
     curl -LO https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
