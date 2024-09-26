@@ -1,7 +1,7 @@
 package entity
 
 type CommonDBAttributes struct {
-	CreatedAt  string `json:"created_at"`
-	ModifiedAt string `json:"modified_at"`
-	DeletedAt  string `json:"deleted_at"`
+	CreatedAt  int64 `json:"created_at"`
+	ModifiedAt int64 `json:"modified_at"`
+	DeletedAt  int64 `json:"deleted_at"`
 }

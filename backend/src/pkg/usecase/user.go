@@ -4,6 +4,8 @@ import (
 	"app/src/pkg/domain/entity"
 	"app/src/pkg/domain/gateway"
 	"app/src/pkg/domain/repository"
+	"app/src/pkg/errorhandle"
+	"app/src/pkg/lib"
 )
 
 type CreateUserUseCase interface {
@@ -11,9 +13,10 @@ type CreateUserUseCase interface {
 }
 
 type CreateUserUseCaseRequest struct {
-	Name     string `json:"name"`
-	LoginID  string `json:"login_id"`
-	Password string `json:"password"`
+	Name        string `json:"name"`
+	MailAddress string `json:"mail_address"`
+	LoginID     string `json:"login_id"`
+	Password    string `json:"password"`
 }
 
 type CreateUserUseCaseResponse struct {
@@ -31,13 +34,22 @@ func NewCreateUserUseCase(userRepository repository.UserRepository) CreateUserUs
 }
 
 func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserUseCaseResponse, error) {
-	user := &entity.User{
-		Name: req.Name,
+
+	id, err := lib.GenerateUUIDv4()
+	if err != nil {
+		return nil, errorhandle.Wrap("lib.GenerateUUIDv4()", err)
 	}
-	createReq := gateway.NewCreateUserRequest(*user, req.LoginID, req.Password)
+
+	user := entity.NewUser(entity.UserID(id), req.Name, lib.GetNowUnixTimeSeconds())
+	createReq := gateway.NewCreateUserRequest(*user, req.MailAddress, req.LoginID, req.Password)
+	//todo: time uuid
 	if err := usecase.userRepository.Create(createReq); err != nil {
 		return nil, err
 	}
+	if err != nil {
+		return nil, errorhandle.Wrap("userRepository.Create()", err)
+	}
+
 	return &CreateUserUseCaseResponse{
 		ID: string(user.ID),
 	}, nil
