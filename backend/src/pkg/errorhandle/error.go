@@ -22,9 +22,14 @@ func IsErrorType(err error, target error) bool {
 //---typical error message---
 
 const (
-	LibraryError = "library error"
+	RequiredButNotFoundError = "required but not found error"
+	LibraryError             = "library error"
 )
 
-func NewLibraryError() error {
-	return NewError(LibraryError)
+func NewRequiredButNotFoundError(message string) error {
+	return Wrap(message, NewError(RequiredButNotFoundError))
+}
+
+func NewLibraryError(message string) error {
+	return Wrap(message, NewError(LibraryError))
 }
