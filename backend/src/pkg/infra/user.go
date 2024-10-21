@@ -13,7 +13,7 @@ func NewUserRepositoryInfra() repository.UserRepository {
 }
 
 func (u *UserRepositoryInfra) Create(req *gateway.CreateUserRequest) error {
-	//infra
-	//todo: cognito cockroachdb
+	//TODO: cognito
+	//TODO: cockroachdb
 	return nil
 }
