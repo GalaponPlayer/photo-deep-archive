@@ -1,6 +1,13 @@
 package gateway
 
-import "app/src/pkg/domain/entity"
+import (
+	"app/src/pkg/config"
+	"app/src/pkg/domain/entity"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
+)
 
 type CreateUserRequest struct {
 	User        entity.User `json:"user"`
@@ -15,5 +22,16 @@ func NewCreateUserRequest(user entity.User, mailAddress string, loginID string, 
 		MailAddress: mailAddress,
 		LoginID:     loginID,
 		Password:    password,
+	}
+}
+
+func (req CreateUserRequest) ToCognitoSignUpInput() *cognitoidentityprovider.SignUpInput {
+	return &cognitoidentityprovider.SignUpInput{
+		ClientId: &config.UserCognitoClientID,
+		Username: &req.LoginID,
+		Password: &req.Password,
+		UserAttributes: []types.AttributeType{
+			{Name: aws.String("email"), Value: aws.String(req.MailAddress)},
+		},
 	}
 }

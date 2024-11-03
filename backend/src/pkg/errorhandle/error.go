@@ -24,6 +24,7 @@ func IsErrorType(err error, target error) bool {
 const (
 	RequiredButNotFoundError = "required but not found error"
 	LibraryError             = "library error"
+	InvalidValueError        = "invalid value error"
 )
 
 func NewRequiredButNotFoundError(message string) error {
@@ -32,4 +33,8 @@ func NewRequiredButNotFoundError(message string) error {
 
 func NewLibraryError(message string) error {
 	return Wrap(message, NewError(LibraryError))
+}
+
+func NewInvalidValueError(message string) error {
+	return Wrap(message, NewError(InvalidValueError))
 }
