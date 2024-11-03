@@ -2,6 +2,16 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: go-serverless-app-4
 
+Parameters:
+  CognitoUserPoolId:
+    Type: String
+    Description: Cognito User Pool ID
+    Default: ""
+  CognitoAppClientId:
+    Type: String
+    Description: Cognito App Client ID
+    Default: ""
+
 Resources:
   PDALambdaAPIGWForPublic:
     Type: AWS::Serverless::Function
@@ -15,6 +25,10 @@ Resources:
       MemorySize: 1024
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_APP_CLIENT_ID: !Ref CognitoAppClientId
       Events:
         CatchAll:
           Type: Api
