@@ -82,6 +82,7 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 	if err != nil {
 		return nil, errorhandle.Wrap("lib.GenerateUUIDv4()", err)
 	}
+	//TODO: IDが存在しているかチェックORフロントで確認できるようなAPI
 
 	createReq := req.ToGateway(entity.UserID(id), lib.GetNowUnixTimeSeconds())
 	if err := usecase.userRepository.Create(createReq); err != nil {
