@@ -1,7 +1,6 @@
 package gateway
 
 import (
-	"app/src/pkg/config"
 	"app/src/pkg/domain/entity"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -25,9 +24,9 @@ func NewCreateUserRequest(user entity.User, mailAddress string, loginID string, 
 	}
 }
 
-func (req CreateUserRequest) ToCognitoSignUpInput() *cognitoidentityprovider.SignUpInput {
+func (req CreateUserRequest) ToCognitoSignUpInput(cognitoAppClientId string) *cognitoidentityprovider.SignUpInput {
 	return &cognitoidentityprovider.SignUpInput{
-		ClientId: &config.UserCognitoClientID,
+		ClientId: &cognitoAppClientId,
 		Username: &req.LoginID,
 		Password: &req.Password,
 		UserAttributes: []types.AttributeType{
