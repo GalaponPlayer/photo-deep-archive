@@ -15,3 +15,12 @@ func LogInfo(message string, v interface{}) {
 	_, file, line, _ := runtime.Caller(1)
 	slog.Info(message, "file: ", file, "line: ", line, "data: ", string(b))
 }
+
+func LogError(message string, v interface{}) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		slog.Error("lib.LogError jsonMarshal", err)
+	}
+	_, file, line, _ := runtime.Caller(1)
+	slog.Error(message, "file: ", file, "line: ", line, "data: ", string(b))
+}

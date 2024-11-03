@@ -3,6 +3,7 @@ package factory
 import (
 	"app/src/pkg/handler"
 	"app/src/pkg/infra"
+	"app/src/pkg/lib"
 	"app/src/pkg/usecase"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,14 @@ import (
 
 func CreateUser(c *gin.Context) {
 	//usecase
-	userRepositoryInfra := infra.NewUserRepositoryInfra()
+	userRepositoryInfra, err := infra.NewUserRepositoryInfra()
+	if err != nil {
+		if err != nil {
+			lib.LogError("Process Error:", err)
+			c.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+	}
 	usecase := usecase.NewCreateUserUseCase(userRepositoryInfra)
 
 	//usecase
