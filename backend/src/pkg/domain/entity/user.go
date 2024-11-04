@@ -1,11 +1,13 @@
 package entity
 
-import "app/src/pkg/lib"
+type UserID uint
 
-type UserID lib.UUIDv4
+func (id UserID) Value() uint {
+	return uint(id)
+}
 
 type User struct {
-	ID   UserID `json:"id"`
+	ID   UserID `json:"id" gorm:"primaryKey;default:auto_random()"`
 	Name string `json:"name"`
 	CommonDBAttributes
 }

@@ -17,7 +17,6 @@ type CreateUserUseCase interface {
 type CreateUserUseCaseRequest struct {
 	Name        *string `json:"name,omitempty"`
 	MailAddress *string `json:"mail_address,omitempty"`
-	LoginID     *string `json:"login_id,omitempty"`
 	Password    *string `json:"password,omitempty"`
 }
 
@@ -34,12 +33,6 @@ func (req CreateUserUseCaseRequest) Validate() error {
 		return errorhandle.NewRequiredButNotFoundError("mail_address")
 	}
 
-	if req.LoginID == nil {
-		return errorhandle.NewRequiredButNotFoundError("login_id")
-	} else if len(*req.LoginID) == 0 {
-		return errorhandle.NewRequiredButNotFoundError("login_id")
-	}
-
 	if req.Password == nil {
 		return errorhandle.NewRequiredButNotFoundError("password")
 		//TODO: cognitoのパスワードルールに合わせる
@@ -49,17 +42,16 @@ func (req CreateUserUseCaseRequest) Validate() error {
 	return nil
 }
 
-func (req CreateUserUseCaseRequest) ToGateway(id entity.UserID, ts int64) *gateway.CreateUserRequest {
+func (req CreateUserUseCaseRequest) ToGateway(ts int64) *gateway.CreateUserRequest {
 	return gateway.NewCreateUserRequest(
-		*entity.NewUser(id, *req.Name, ts),
+		*entity.NewUser(entity.UserID(0), *req.Name, ts),
 		*req.MailAddress,
-		*req.LoginID,
 		*req.Password,
 	)
 }
 
 type CreateUserUseCaseResponse struct {
-	ID string `json:"id"`
+	ID entity.UserID `json:"id"`
 }
 
 type createUserUseCase struct {
@@ -78,21 +70,13 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 		return nil, errorhandle.Wrap("req.Validate()", err)
 	}
 
-	id, err := lib.GenerateUUIDv4()
-	if err != nil {
-		return nil, errorhandle.Wrap("lib.GenerateUUIDv4()", err)
-	}
-	//TODO: IDが存在しているかチェックORフロントで確認できるようなAPI
-
-	createReq := req.ToGateway(entity.UserID(id), lib.GetNowUnixTimeSeconds())
-	if err := usecase.userRepository.Create(createReq); err != nil {
-		return nil, err
-	}
+	createReq := req.ToGateway(lib.GetNowUnixTimeSeconds())
+	userId, err := usecase.userRepository.Create(createReq)
 	if err != nil {
 		return nil, errorhandle.Wrap("userRepository.Create()", err)
 	}
 
 	return &CreateUserUseCaseResponse{
-		ID: string(id),
+		ID: *userId,
 	}, nil
 }

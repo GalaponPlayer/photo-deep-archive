@@ -49,10 +49,11 @@ jobs:
         with:
           secret-ids: |
             COGNITO, ${{secrets.SECRETS_COGNITO_ARN}}
+            TIDB, ${{secrets.SECRETS_TIDB_ARN}}
           name-transformation: uppercase
           parse-json-secrets: true
 
       - name: Build & Deploy Cloudformation stacks
         run: |
           sam build --template-file ${TEMPLATE_FILE}
-          sam deploy --template-file ${TEMPLATE_FILE} --stack-name apiForPublic --no-confirm-changeset --no-fail-on-empty-changeset --s3-bucket ${{secrets.S3_BUCKET_NAME_PROD}} --capabilities CAPABILITY_IAM --parameter-overrides CognitoUserPoolId=${COGNITO_USER_POOL_ID} CognitoAppClientId=${COGNITO_APP_CLIENT_ID}
+          sam deploy --template-file ${TEMPLATE_FILE} --stack-name apiForPublic --no-confirm-changeset --no-fail-on-empty-changeset --s3-bucket ${{secrets.S3_BUCKET_NAME_PROD}} --capabilities CAPABILITY_IAM --parameter-overrides CognitoUserPoolId=${COGNITO_USER_POOL_ID} CognitoAppClientId=${COGNITO_APP_CLIENT_ID} TidbHost=${TIDB_HOST} TidbPort=${TIDB_PORT} TidbUser=${TIDB_USER} TidbPassword=${TIDB_PASSWORD}

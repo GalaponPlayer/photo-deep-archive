@@ -11,6 +11,22 @@ Parameters:
     Type: String
     Description: Cognito App Client ID
     Default: ""
+  TidbHost:
+    Type: String
+    Description: TiDB Host
+    Default: ""
+  TidbPort:
+    Type: String
+    Description: TiDB Port
+    Default: ""
+  TidbUser:
+    Type: String
+    Description: TiDB User
+    Default: ""
+  TidbPassword:
+    Type: String
+    Description: TiDB Password
+    Default: ""
 
 Resources:
   PDALambdaAPIGWForPublic:
@@ -29,6 +45,10 @@ Resources:
         Variables:
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
           COGNITO_APP_CLIENT_ID: !Ref CognitoAppClientId
+          TIDB_HOST: !Ref TidbHost
+          TIDB_PORT: !Ref TidbPort
+          TIDB_USER: !Ref TidbUser
+          TIDB_PASSWORD: !Ref TidbPassword
       Events:
         CatchAll:
           Type: Api
