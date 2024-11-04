@@ -1,1 +1,2 @@
 backend/src/lambda_handler/api_for_public/bootstrap
+set_env.sh

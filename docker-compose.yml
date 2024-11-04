@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: ./dev/front.dockerfile
     tty: true
+    platform: linux/x86_64
     volumes:
       - .:/app:cached
       - react_node_modules:/app/node_modulescd

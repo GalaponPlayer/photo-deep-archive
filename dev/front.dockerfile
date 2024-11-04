@@ -18,6 +18,11 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH="/go"
 ENV GOBIN="${GOPATH}/bin"
 
+# MySQL
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    default-mysql-client && \
+    rm -rf /var/lib/apt/lists/*
+
 
 RUN mkdir /app && chown node:node /app
 WORKDIR /app
