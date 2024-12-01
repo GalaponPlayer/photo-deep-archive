@@ -6,10 +6,10 @@ export class CreateAccountRequest implements BasePostRequestAbs {
   email: string;
   password: string;
 
-  constructor(name: string, email: string, password: string) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
+  constructor(req: { name: string; email: string; password: string }) {
+    this.name = req.name;
+    this.email = req.email;
+    this.password = req.password;
   }
 
   getParamsObject(): object {

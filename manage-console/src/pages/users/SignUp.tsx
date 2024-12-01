@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { Helper } from "@/libs/helper"
 import { Field } from "@/components/ui/field"
 import { CreateAccountRequest } from "@/internal/ports/impls/accounts"
+import { AccountApi } from "@/internal/apis/account-api"
 
 export const SignUp = () => {
     const {
@@ -12,9 +13,17 @@ export const SignUp = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<CreateAccountRequest>()
-    const onSubmit = handleSubmit((data) => {
+    const api = new AccountApi();
+    const onSubmit = handleSubmit(async (data) => {
+        const req = new CreateAccountRequest(data)
+        const res = await api.signup(req)
         console.log(data)
+        console.log(res)
     })
+    const log = () => {
+        console.log("clicked")
+        console.log()
+    }
     return (
         <BaseLayout>
             <Container centerContent>
@@ -38,7 +47,7 @@ export const SignUp = () => {
                                     >
                                         <Input {...register("password", { required: "・数字１文字以上\n・特殊記号１文字以上\n大文字小文字をそれぞれ１文字以上", pattern: Helper.getRegExpPassword() })} placeholder="Password" />
                                     </Field>
-                                    <Button type="submit" mt="2rem">登録</Button>
+                                    <Button type="submit" mt="2rem" onClick={log}>登録</Button>
                                 </Stack>
                             </form>
                         </Card.Body>
