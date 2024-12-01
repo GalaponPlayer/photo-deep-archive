@@ -32,6 +32,7 @@ USER node
 COPY --chown=node:node ../manage-console/package.json ../manage-console/yarn.lock ./
 
 RUN yarn install
+RUN yarn global add @aws-amplify/cli
 
 COPY --chown=node:node . .
 

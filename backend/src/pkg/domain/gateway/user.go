@@ -1,5 +1,7 @@
 package gateway
 
+//TODO: gatewayではなくportにする
+
 import (
 	"app/src/pkg/domain/entity"
 	"strconv"
