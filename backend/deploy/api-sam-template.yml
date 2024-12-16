@@ -62,6 +62,16 @@ Resources:
           Properties:
             Path: /v1/{proxy+}
             Method: ANY
+            RestApiId: !Ref APIGatewayForPublic
+  APIGatewayForPublic:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: pda-api-gateway
+      StageName: prod
+      Cors:
+        AllowMethods: "GET,POST,PUT,DELETE,OPTIONS"
+        AllowHeaders: "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent"
+        AllowOrigin: "http://localhost:8010"
   FunctionRole:
     Type: AWS::IAM::Role
     Properties:

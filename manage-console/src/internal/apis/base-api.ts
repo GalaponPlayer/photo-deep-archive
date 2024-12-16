@@ -52,7 +52,7 @@ export class InternalApiBase {
   async post(
     request: BasePostRequestAbs,
     config: AxiosRequestConfig | undefined
-  ): Promise<BaseApiResponseAbs> {
+  ): Promise<BaseApiResponse> {
     //TODO: publicは別で作るので、AUthenticatorを使う
     const cfg = config
       ? config

@@ -50,4 +50,8 @@ export class BaseApiResponse implements BaseApiResponseAbs {
   getRequest(): object {
     return this.request;
   }
+
+  isSuccess(): boolean {
+    return this.status === 200;
+  }
 }

@@ -6,6 +6,7 @@ import { Helper } from "@/libs/helper"
 import { Field } from "@/components/ui/field"
 import { CreateAccountRequest } from "@/internal/ports/impls/accounts"
 import { AccountApi } from "@/internal/apis/account-api"
+import { toaster } from "@/components/ui/toaster"
 
 export const SignUp = () => {
     const {
@@ -17,6 +18,13 @@ export const SignUp = () => {
     const onSubmit = handleSubmit(async (data) => {
         const req = new CreateAccountRequest(data)
         const res = await api.signup(req)
+        if (!res.isSuccess()) {
+            toaster.create({
+                description: res.getStatus(),
+                type: "error",
+            })
+            return
+        }
         console.log(data)
         console.log(res)
     })
