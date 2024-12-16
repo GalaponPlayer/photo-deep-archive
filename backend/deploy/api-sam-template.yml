@@ -69,9 +69,9 @@ Resources:
       Name: pda-api-gateway
       StageName: prod
       Cors:
-        AllowMethods: "GET,POST,PUT,DELETE,OPTIONS"
-        AllowHeaders: "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent"
-        AllowOrigin: "http://localhost:8010"
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+        AllowOrigin: "'http://localhost:8010'"
   FunctionRole:
     Type: AWS::IAM::Role
     Properties:
