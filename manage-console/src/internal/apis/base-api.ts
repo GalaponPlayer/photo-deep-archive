@@ -8,11 +8,14 @@ import { BaseApiResponse } from "../ports/impls/base";
 
 export class InternalApiBase {
   //TODO: env
-  private baseUrl = "http://localhost:3000";
-  private path = "";
+  private baseUrl: string = "http://localhost:3000";
+  private path: string = "";
 
   constructor(path: string = "") {
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+    // this.baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+    this.baseUrl = import.meta.env.VITE_API_BASE_URL.endsWith("/")
+      ? import.meta.env.VITE_API_BASE_URL
+      : import.meta.env.VITE_API_BASE_URL + "/";
     this.path = path;
   }
 
@@ -20,8 +23,12 @@ export class InternalApiBase {
     this.path = path;
   }
 
+  getProdPath(): string {
+    return "/prod" + this.path;
+  }
+
   getEndPointUrl(): URL {
-    return new URL(this.path, this.baseUrl);
+    return new URL(this.getProdPath(), this.baseUrl);
   }
 
   async get(

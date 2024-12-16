@@ -15,6 +15,7 @@ export const SignUp = () => {
         formState: { errors },
     } = useForm<CreateAccountRequest>()
     const api = new AccountApi();
+    console.log(api.getEndPointUrl())
     const onSubmit = handleSubmit(async (data) => {
         const req = new CreateAccountRequest(data)
         const res = await api.signup(req)
