@@ -35,7 +35,7 @@ func (handler createUserHandler) CreateUser(c *gin.Context) {
 	//TODO: error handling
 	//TODO: change status code by res
 	if err != nil {
-		lib.LogError("Process Error:", err)
+		lib.LogError("Process Error:", err.Error())
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
