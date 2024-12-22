@@ -15,7 +15,8 @@ func CreateUser(c *gin.Context) {
 	if err != nil {
 		if err != nil {
 			lib.LogError("Process Error:", err)
-			c.JSON(500, gin.H{"error": err.Error()})
+			// c.JSON(500, gin.H{"error": err.Error()})
+			c.JSON(500, lib.ErrorResponseBody{Message: "init repository error"})
 			return
 		}
 	}

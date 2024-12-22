@@ -50,6 +50,13 @@ export const SignUp = () => {
                                         <Input {...register("email", { required: "メールアドレスを入力してください", pattern: Helper.getRegExpEmail() })} placeholder="Email" />
                                     </Field>
                                     <Field
+                                        label="UserName"
+                                        invalid={!!errors.name}
+                                        errorText={errors.name?.message}
+                                    >
+                                        <Input {...register("name", { required: "メールアドレスを入力してください", min: 3 })} placeholder="UserName" />
+                                    </Field>
+                                    <Field
                                         label="Password"
                                         invalid={!!errors.password}
                                         errorText={errors.password?.message}

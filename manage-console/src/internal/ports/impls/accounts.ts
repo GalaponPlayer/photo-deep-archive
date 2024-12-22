@@ -15,7 +15,7 @@ export class CreateAccountRequest implements BasePostRequestAbs {
   getParamsObject(): object {
     return {
       name: this.name,
-      email: this.email,
+      mail_address: this.email,
       password: this.password,
     };
   }
