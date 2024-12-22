@@ -25,9 +25,14 @@ func (handler createUserHandler) CreateUser(c *gin.Context) {
 	req := &usecase.CreateUserUseCaseRequest{}
 	//TODO: validation
 	if err := c.BindJSON(req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(int(lib.StatusCodeBadRequest), lib.ErrorResponseBody{Message: "invalid request"})
 		return
 	}
+	if err := req.Validate(); err != nil {
+		c.JSON(int(lib.StatusCodeBadRequest), lib.ErrorResponseBody{Message: "invalid request"})
+		return
+	}
+
 	lib.LogInfo("Request:", req)
 
 	//TODO: logging
