@@ -7,7 +7,8 @@ import (
 
 type UserRepository interface {
 	// FindAll() ([]*entity.User, error)
-	// FindByID(id entity.UserID) (*entity.User, error)
+	Find(req *gateway.FindUserRequest) (user *entity.User, isNotFound bool, err error)
+	Get(id entity.UserID) (user *entity.User, isNotFound bool, err error)
 	Create(user *gateway.CreateUserRequest) (*entity.UserID, error)
 	// Update(user *entity.User) error
 	// Delete(id entity.UserID) error
