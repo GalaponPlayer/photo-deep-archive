@@ -38,3 +38,7 @@ func (req CreateUserRequest) ToCognitoSignUpInput(cognitoAppClientId string, use
 		},
 	}
 }
+
+type FindUserRequest struct {
+	Email string `json:"email"`
+}

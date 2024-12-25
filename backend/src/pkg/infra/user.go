@@ -8,6 +8,9 @@ import (
 	"app/src/pkg/errorhandle"
 	"app/src/pkg/infra/auth"
 	"app/src/pkg/infra/db"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 type UserRepositoryInfra struct {
@@ -38,6 +41,32 @@ func NewUserRepositoryInfra() (repository.UserRepository, error) {
 		cognitoClient: cognitoClient,
 		gormClient:    gormClient,
 	}, nil
+}
+
+func (repo UserRepositoryInfra) Find(req *gateway.FindUserRequest) (user *entity.User, isNotFound bool, err error) {
+	user = &entity.User{}
+	result := repo.gormClient.DB.Where("mail_address = ?", req.Email).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, true, nil
+		}
+		return nil, false, errorhandle.Wrap("infra.UserRepositoryInfra.Find()", result.Error)
+	}
+
+	return user, false, nil
+}
+
+func (repo UserRepositoryInfra) Get(id entity.UserID) (user *entity.User, isNotFound bool, err error) {
+	user = &entity.User{ID: id}
+	result := repo.gormClient.DB.First(&user, id.Value())
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, true, nil
+		}
+		return nil, false, errorhandle.Wrap("infra.UserRepositoryInfra.Get()", result.Error)
+	}
+
+	return user, false, nil
 }
 
 func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*entity.UserID, error) {
