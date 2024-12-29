@@ -76,6 +76,9 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 	createRes, err := usecase.userRepository.Create(createReq)
 	if err != nil {
 		lib.LogError("createRes", err)
+		if createRes == nil {
+			return nil, errorhandle.Wrap("userRepository.Create()", err)
+		}
 		if createRes.IsEmailAlreadyExistsError {
 			return &CreateUserUseCaseResponse{
 				IsEmailAlreadyExistsError: true,
@@ -86,7 +89,6 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 				IsPasswordInvalidError: true,
 			}, nil
 		}
-		return nil, errorhandle.Wrap("userRepository.Create()", err)
 	}
 
 	return &CreateUserUseCaseResponse{
