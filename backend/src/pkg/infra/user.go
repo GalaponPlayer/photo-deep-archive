@@ -47,7 +47,7 @@ func NewUserRepositoryInfra() (repository.UserRepository, error) {
 
 func (repo UserRepositoryInfra) Find(req *gateway.FindUserRequest) (user *entity.User, isNotFound bool, err error) {
 	user = &entity.User{}
-	result := repo.gormClient.DB.Where("mail_address = ?", req.Email).First(&user)
+	result := repo.gormClient.DB.Where("email = ?", req.Email).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, true, nil
