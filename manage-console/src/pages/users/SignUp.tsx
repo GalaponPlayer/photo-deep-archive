@@ -23,6 +23,20 @@ export const SignUp = () => {
         const res = await api.signup(req)
         setIsLoading(false)
         if (!res.isSuccess()) {
+            if (res.isEmailAlreadyExistsError()) {
+                toaster.create({
+                    description: "このメールアドレスは既に登録されています",
+                    type: "error",
+                })
+                return
+            }
+            if (res.isPasswordInvalidError()) {
+                toaster.create({
+                    description: "パスワードが不正です",
+                    type: "error",
+                })
+                return
+            }
             toaster.create({
                 description: JSON.stringify(res.getData()),
                 type: "error",
