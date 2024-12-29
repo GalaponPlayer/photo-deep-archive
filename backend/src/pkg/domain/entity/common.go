@@ -1,7 +1,9 @@
 package entity
 
+import "time"
+
 type CommonDBAttributes struct {
-	CreatedAt  int64 `json:"created_at"`
-	ModifiedAt int64 `json:"modified_at"`
-	DeletedAt  int64 `json:"deleted_at"`
+	CreatedAt  time.Time `json:"created_at"`
+	ModifiedAt time.Time `json:"modified_at"`
+	DeletedAt  time.Time `json:"deleted_at"`
 }
