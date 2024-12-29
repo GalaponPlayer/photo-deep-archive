@@ -66,19 +66,43 @@ export class InternalApiBase {
       : { headers: { "content-type": "application/json" } };
     //TODO: cognitoの認証が必要
     const url = this.getEndPointUrl();
-    const res = await axios.post(
-      url.toString(),
-      request.getParamsObject(),
-      cfg
-    );
-    const response = new BaseApiResponse(
-      res.data,
-      res.status,
-      res.statusText,
-      res.headers,
-      res.config,
-      res.request
-    );
-    return response;
+
+    let res = null;
+    try {
+      res = await axios.post(url.toString(), request.getParamsObject(), cfg);
+      const response = new BaseApiResponse(
+        res.data,
+        res.status,
+        res.statusText,
+        res.headers,
+        res.config,
+        res.request
+      );
+      return response;
+    } catch (e) {
+      console.log(e);
+      if (axios.isAxiosError(e) && e.response) {
+        const res = e.response;
+        const response = new BaseApiResponse(
+          res.data,
+          res.status,
+          res.statusText,
+          res.headers,
+          res.config,
+          res.request
+        );
+        return response;
+      } else {
+        const response = new BaseApiResponse(
+          {},
+          500,
+          "Internal Server Error",
+          {},
+          {},
+          {}
+        );
+        return response;
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Box, Card, Center, Input, Stack, Toast, } from "@chakra-ui/react"
+import { Box, Card, Center, Input, Stack, } from "@chakra-ui/react"
 import { BaseLayout } from "@/pages/layout/BaseLayout"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
@@ -24,7 +24,7 @@ export const SignUp = () => {
         setIsLoading(false)
         if (!res.isSuccess()) {
             toaster.create({
-                description: res.getStatus(),
+                description: JSON.stringify(res.getData()),
                 type: "error",
             })
             return

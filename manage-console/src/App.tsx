@@ -6,6 +6,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        //todo: パス管理を専用にする
         <Route path="/signup" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
