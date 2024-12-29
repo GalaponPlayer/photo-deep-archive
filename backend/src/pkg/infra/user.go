@@ -75,16 +75,21 @@ func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway
 	res := &gateway.CreateUserResponse{}
 	//gorm
 	user := req.User
+	//unique制約のエラーチェックができないため、Findで確認
+	findReq := &gateway.FindUserRequest{Email: req.MailAddress}
+	findRes, isNotFound, err := repo.Find(findReq)
+	if !isNotFound {
+		lib.LogInfo("already exists", findRes)
+		res.IsEmailAlreadyExistsError = true
+		return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
+	}
+
 	result := repo.gormClient.DB.Create(&user)
 	if result.Error != nil {
 		lib.LogError("UserRepositoryInfra.Create()", result.Error.Error())
-		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-			res.IsEmailAlreadyExistsError = true
-			return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
-		}
 		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", result.Error)
 	}
-	//TiDBのAUTO_RANDOM
+	//TiDBのAUTO_RANDOMでIDが発行される
 	res.ID = user.ID
 
 	//cognito
