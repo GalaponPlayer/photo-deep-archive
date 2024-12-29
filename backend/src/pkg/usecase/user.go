@@ -5,6 +5,7 @@ import (
 	"app/src/pkg/domain/gateway"
 	"app/src/pkg/domain/repository"
 	"app/src/pkg/errorhandle"
+	"app/src/pkg/lib"
 )
 
 type CreateUserUseCase interface {
@@ -74,6 +75,7 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 	createReq := req.ToGateway()
 	createRes, err := usecase.userRepository.Create(createReq)
 	if err != nil {
+		lib.LogError("createRes", err)
 		if createRes.IsEmailAlreadyExistsError {
 			return &CreateUserUseCaseResponse{
 				IsEmailAlreadyExistsError: true,
