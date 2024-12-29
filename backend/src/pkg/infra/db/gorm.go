@@ -16,7 +16,7 @@ type GormClient struct {
 }
 
 func NewGormClient(cfg config.ConfigVariables) (*GormClient, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&tls=%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&tls=%s&parseTime=True&loc=Local",
 		cfg.TiDB.User, cfg.TiDB.Password, cfg.TiDB.Host, cfg.TiDB.Port, DBNamePhotoDeepArchive, "true")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
