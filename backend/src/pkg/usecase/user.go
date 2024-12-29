@@ -5,7 +5,6 @@ import (
 	"app/src/pkg/domain/gateway"
 	"app/src/pkg/domain/repository"
 	"app/src/pkg/errorhandle"
-	"app/src/pkg/lib"
 )
 
 type CreateUserUseCase interface {
@@ -42,9 +41,9 @@ func (req CreateUserUseCaseRequest) Validate() error {
 	return nil
 }
 
-func (req CreateUserUseCaseRequest) ToGateway(ts int64) *gateway.CreateUserRequest {
+func (req CreateUserUseCaseRequest) ToGateway() *gateway.CreateUserRequest {
 	return gateway.NewCreateUserRequest(
-		*entity.NewUser(entity.UserID(0), *req.Name, *req.MailAddress, ts),
+		*entity.NewUser(entity.UserID(0), *req.Name, *req.MailAddress),
 		*req.MailAddress,
 		*req.Password,
 	)
@@ -72,7 +71,7 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 		return nil, errorhandle.Wrap("req.Validate()", err)
 	}
 
-	createReq := req.ToGateway(lib.GetNowUnixTimeSeconds())
+	createReq := req.ToGateway()
 	createRes, err := usecase.userRepository.Create(createReq)
 	if err != nil {
 		if createRes.IsEmailAlreadyExistsError {

@@ -13,15 +13,11 @@ type User struct {
 	CommonDBAttributes
 }
 
-func NewUser(id UserID, name string, email string, ts int64) *User {
+func NewUser(id UserID, name string, email string) *User {
 	return &User{
-		ID:    id,
-		Name:  name,
-		Email: email,
-		CommonDBAttributes: CommonDBAttributes{
-			CreatedAt:  ts,
-			ModifiedAt: ts,
-			DeletedAt:  0,
-		},
+		ID:                 id,
+		Name:               name,
+		Email:              email,
+		CommonDBAttributes: CommonDBAttributes{},
 	}
 }
