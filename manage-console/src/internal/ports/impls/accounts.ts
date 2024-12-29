@@ -36,4 +36,12 @@ export class CreateAccountResponse extends BaseApiResponse {
   getData(): object {
     return super.getData();
   }
+
+  isEmailAlreadyExistsError(): boolean {
+    return this.getStatus() === 460;
+  }
+
+  isPasswordInvalidError(): boolean {
+    return this.getStatus() === 461;
+  }
 }

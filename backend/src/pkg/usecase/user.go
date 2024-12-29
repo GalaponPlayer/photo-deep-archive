@@ -44,14 +44,16 @@ func (req CreateUserUseCaseRequest) Validate() error {
 
 func (req CreateUserUseCaseRequest) ToGateway(ts int64) *gateway.CreateUserRequest {
 	return gateway.NewCreateUserRequest(
-		*entity.NewUser(entity.UserID(0), *req.Name, ts),
+		*entity.NewUser(entity.UserID(0), *req.Name, *req.MailAddress, ts),
 		*req.MailAddress,
 		*req.Password,
 	)
 }
 
 type CreateUserUseCaseResponse struct {
-	ID entity.UserID `json:"id"`
+	ID                        entity.UserID `json:"id"`
+	IsEmailAlreadyExistsError bool          `json:"is_email_already_exists_error"`
+	IsPasswordInvalidError    bool          `json:"is_password_invalid_error"`
 }
 
 type createUserUseCase struct {
@@ -71,12 +73,22 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 	}
 
 	createReq := req.ToGateway(lib.GetNowUnixTimeSeconds())
-	userId, err := usecase.userRepository.Create(createReq)
+	createRes, err := usecase.userRepository.Create(createReq)
 	if err != nil {
+		if createRes.IsEmailAlreadyExistsError {
+			return &CreateUserUseCaseResponse{
+				IsEmailAlreadyExistsError: true,
+			}, nil
+		}
+		if createRes.IsPasswordInvalidError {
+			return &CreateUserUseCaseResponse{
+				IsPasswordInvalidError: true,
+			}, nil
+		}
 		return nil, errorhandle.Wrap("userRepository.Create()", err)
 	}
 
 	return &CreateUserUseCaseResponse{
-		ID: *userId,
+		ID: createRes.ID,
 	}, nil
 }

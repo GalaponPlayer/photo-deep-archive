@@ -10,6 +10,7 @@ import (
 	"app/src/pkg/infra/db"
 	"errors"
 
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"gorm.io/gorm"
 )
 
@@ -69,23 +70,40 @@ func (repo UserRepositoryInfra) Get(id entity.UserID) (user *entity.User, isNotF
 	return user, false, nil
 }
 
-func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*entity.UserID, error) {
+func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway.CreateUserResponse, error) {
+	res := &gateway.CreateUserResponse{}
 	//gorm
 	user := req.User
 	result := repo.gormClient.DB.Create(&user)
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+			res.IsEmailAlreadyExistsError = true
+			return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
+		}
 		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", result.Error)
 	}
 	//TiDBのAUTO_RANDOM
-	userID := user.ID
+	res.ID = user.ID
 
 	//cognito
-	isUserConfirmed, err := repo.cognitoClient.SignUp(*req.ToCognitoSignUpInput(repo.config.Cognito.AppClientID, userID.Value()))
+	isUserConfirmed, err := repo.cognitoClient.SignUp(*req.ToCognitoSignUpInput(repo.config.Cognito.AppClientID, user.ID.Value()))
 	if err != nil {
+		var invalidPassword *types.InvalidPasswordException
+		var usernameExists *types.UsernameExistsException
+		if errors.As(err, &invalidPassword) {
+			repo.gormClient.DB.Delete(&user)
+			res.IsPasswordInvalidError = true
+			return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Password is invalid"))
+		}
+		if errors.As(err, &usernameExists) {
+			repo.gormClient.DB.Delete(&user)
+			res.IsEmailAlreadyExistsError = true
+			return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
+		}
 		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", err)
 	}
 	if !isUserConfirmed {
 		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("User is not confirmed"))
 	}
-	return &userID, nil
+	return res, nil
 }

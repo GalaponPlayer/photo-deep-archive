@@ -7,15 +7,17 @@ func (id UserID) Value() uint {
 }
 
 type User struct {
-	ID   UserID `json:"id" gorm:"primaryKey;default:auto_random()"`
-	Name string `json:"name"`
+	ID    UserID `json:"id" gorm:"primaryKey;default:auto_random()"`
+	Name  string `json:"name"`
+	Email string `json:"email" gorm:"type:text;uniqueIndex:idx_email,length:191"`
 	CommonDBAttributes
 }
 
-func NewUser(id UserID, name string, ts int64) *User {
+func NewUser(id UserID, name string, email string, ts int64) *User {
 	return &User{
-		ID:   id,
-		Name: name,
+		ID:    id,
+		Name:  name,
+		Email: email,
 		CommonDBAttributes: CommonDBAttributes{
 			CreatedAt:  ts,
 			ModifiedAt: ts,
