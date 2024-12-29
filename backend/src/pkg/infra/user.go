@@ -47,7 +47,7 @@ func NewUserRepositoryInfra() (repository.UserRepository, error) {
 
 func (repo UserRepositoryInfra) Find(req *gateway.FindUserRequest) (user *entity.User, isNotFound bool, err error) {
 	user = &entity.User{}
-	result := repo.gormClient.DB.Where("mail_address = ?", req.Email).First(&user)
+	result := repo.gormClient.DB.Where("email = ?", req.Email).First(&user)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, true, nil
@@ -79,7 +79,7 @@ func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway
 	findReq := &gateway.FindUserRequest{Email: req.MailAddress}
 	findRes, isNotFound, err := repo.Find(findReq)
 	if !isNotFound {
-		lib.LogInfo("already exists", findRes)
+		lib.LogInfo("already exists", *findRes)
 		res.IsEmailAlreadyExistsError = true
 		return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
 	}
