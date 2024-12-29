@@ -39,6 +39,12 @@ func (req CreateUserRequest) ToCognitoSignUpInput(cognitoAppClientId string, use
 	}
 }
 
+type CreateUserResponse struct {
+	ID                        entity.UserID
+	IsEmailAlreadyExistsError bool
+	IsPasswordInvalidError    bool
+}
+
 type FindUserRequest struct {
 	Email string `json:"email"`
 }

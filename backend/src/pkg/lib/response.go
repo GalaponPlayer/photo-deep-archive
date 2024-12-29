@@ -3,9 +3,14 @@ package lib
 type StatusCode int
 
 const (
+	//common
 	StatusCodeOK                  StatusCode = 200
 	StatusCodeBadRequest          StatusCode = 400
 	StatusCodeInternalServerError StatusCode = 500
+
+	//user
+	CreateUserStatusCodeEmailAlreadyExists StatusCode = 460
+	CreateUserStatusCodePasswordInvalid    StatusCode = 461
 )
 
 type ErrorResponseBody struct {

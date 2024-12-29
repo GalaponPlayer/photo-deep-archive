@@ -37,12 +37,18 @@ func (handler createUserHandler) CreateUser(c *gin.Context) {
 
 	//TODO: logging
 	res, err := handler.useCase.Do(req)
-	//TODO: error handling
-	//TODO: change status code by res
 	if err != nil {
-		lib.LogError("Process Error:", err.Error())
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
+		if res == nil {
+			c.JSON(int(lib.StatusCodeInternalServerError), lib.ErrorResponseBody{Message: "internal server error"})
+			return
+		} else if res.IsEmailAlreadyExistsError {
+			c.JSON(int(lib.CreateUserStatusCodeEmailAlreadyExists), lib.ErrorResponseBody{Message: "email already exists"})
+			return
+		} else if res.IsPasswordInvalidError {
+			c.JSON(int(lib.CreateUserStatusCodePasswordInvalid), lib.ErrorResponseBody{Message: "invalid password"})
+			return
+		}
+
 	}
 
 	lib.LogInfo("Response:", res)
