@@ -8,6 +8,7 @@ import (
 	"app/src/pkg/errorhandle"
 	"app/src/pkg/infra/auth"
 	"app/src/pkg/infra/db"
+	"app/src/pkg/lib"
 	"errors"
 
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
@@ -76,6 +77,7 @@ func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway
 	user := req.User
 	result := repo.gormClient.DB.Create(&user)
 	if result.Error != nil {
+		lib.LogError("UserRepositoryInfra.Create()", result.Error.Error())
 		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
 			res.IsEmailAlreadyExistsError = true
 			return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
