@@ -116,7 +116,9 @@ func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway
 		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", err)
 	}
 	if !isUserConfirmed {
-		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("User is not confirmed"))
+		lib.LogInfo("User is not confirmed", user)
+		//普通はfalse
+		// return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("User is not confirmed"))
 	}
 	return res, nil
 }
