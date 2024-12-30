@@ -24,7 +24,10 @@ export class InternalApiBase {
   }
 
   getProdPath(): string {
-    return "/prod" + this.path;
+    if (this.baseUrl.includes("/prod/")) {
+      return "/prod" + this.path;
+    }
+    return this.path;
   }
 
   getEndPointUrl(): URL {

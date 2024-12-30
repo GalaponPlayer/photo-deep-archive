@@ -37,5 +37,6 @@ RUN yarn global add @aws-amplify/cli
 COPY --chown=node:node . .
 
 EXPOSE 80
+EXPOSE 8080
 
 # CMD [ "yarn", "dev" ]

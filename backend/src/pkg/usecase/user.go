@@ -75,7 +75,7 @@ func (usecase createUserUseCase) Do(req *CreateUserUseCaseRequest) (*CreateUserU
 	createReq := req.ToGateway()
 	createRes, err := usecase.userRepository.Create(createReq)
 	if err != nil {
-		lib.LogError("createRes", err)
+		lib.LogError("createRes", err.Error())
 		if createRes == nil {
 			return nil, errorhandle.Wrap("userRepository.Create()", err)
 		}

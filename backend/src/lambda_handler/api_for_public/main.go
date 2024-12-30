@@ -4,6 +4,7 @@ import (
 	"app/src/pkg/factory"
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -15,7 +16,7 @@ import (
 
 var ginLambda *ginadapter.GinLambda
 
-func init() {
+func setupRouter() *gin.Engine {
 	// stdout and stderr are sent to AWS CloudWatch Logs
 	log.Printf("Gin cold start")
 	router := gin.Default()
@@ -31,6 +32,13 @@ func init() {
 	// user
 	v1Router.POST("/user", factory.CreateUser)
 
+	return router
+}
+
+func init() {
+	// stdout and stderr are sent to AWS CloudWatch Logs
+	log.Printf("Gin cold start")
+	router := setupRouter()
 	ginLambda = ginadapter.New(router)
 }
 
@@ -53,5 +61,15 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 }
 
 func main() {
-	lambda.Start(Handler)
+	// 環境変数で実行モードを判定
+	if os.Getenv("GIN_MODE") == "debug" {
+		// ローカル開発モード
+		router := setupRouter()
+		log.Println("Running in local debug mode...")
+		router.Run(":8080") // ローカルサーバーをポート8080で起動
+	} else {
+		// Lambdaモード
+		log.Println("Running in Lambda mode...")
+		lambda.Start(Handler)
+	}
 }

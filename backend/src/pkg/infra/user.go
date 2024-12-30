@@ -78,8 +78,14 @@ func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway
 	//unique制約のエラーチェックができないため、Findで確認
 	findReq := &gateway.FindUserRequest{Email: req.MailAddress}
 	findRes, isNotFound, err := repo.Find(findReq)
+	if err != nil {
+		lib.LogError("UserRepositoryInfra.Create()", err.Error())
+		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", err)
+	}
 	if !isNotFound {
-		lib.LogInfo("already exists", *findRes)
+		if findRes != nil {
+			lib.LogInfo("already exists", *findRes)
+		}
 		res.IsEmailAlreadyExistsError = true
 		return res, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("Mail address is already used"))
 	}
@@ -110,7 +116,9 @@ func (repo UserRepositoryInfra) Create(req *gateway.CreateUserRequest) (*gateway
 		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", err)
 	}
 	if !isUserConfirmed {
-		return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("User is not confirmed"))
+		lib.LogInfo("User is not confirmed", user)
+		//普通はfalse
+		// return nil, errorhandle.Wrap("infra.UserRepositoryInfra.Create()", errorhandle.NewError("User is not confirmed"))
 	}
 	return res, nil
 }
